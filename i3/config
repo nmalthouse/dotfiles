@@ -1,0 +1,220 @@
+#TODO 
+# Have the status bar display
+# current Song playing
+# If we are taking a screenshot
+#Style
+#   Lock screen
+#   Boot splash
+#   Login manager
+#
+# ncdu --curses style disk usage analyzer
+
+#Function
+#   arandr, feh?, qjackctl
+#   replace or patch rofi
+#   saving layouts?
+#   save monitor layouts and apply with rofi, see thevalueable.dev/i3-config-mouseless
+#   Better status bar
+#   add and remove sections based on platform
+#   how to sync between computers
+#   Xcolor shortcut
+#   Mouse speed config
+#
+#   really good clipboard support
+#   notifications with dunst
+#   write tool for background selection
+#.Configs that need to be synced:
+#kitty, i3, i3status, nvim, .zshrc, .xprofile
+# rofi for keyboard layout
+
+
+
+set $mod Mod4
+
+set $fnt pango:DINPro Regular 10
+font $fnt
+
+exec_always --no-startup-id ~/.fehbg
+
+exec --no-startup-id dex --autostart --environment i3
+
+bindsym XF86MonBrightnessDown exec --no-startup-id blight set -10%
+bindsym XF86MonBrightnessUp   exec --no-startup-id blight set +10%
+
+bindsym $mod+o  exec xdotool key ctrl+z 
+
+set $volumeup amixer sset Master playback 5%+
+set $volumedown amixer sset Master playback 5%-
+set $volumemute amixer sset Master playback toggle
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id $volumeup
+bindsym XF86AudioLowerVolume exec --no-startup-id $volumedown
+bindsym XF86AudioMute        exec --no-startup-id $volumemute
+
+set $left h
+set $down j
+set $up k
+set $right l
+
+
+
+floating_modifier $mod
+floating_maximum_size 1920 x 1080
+floating_minimum_size 64 x 36
+bindsym $mod+grave exec --no-startup-id jgmenu_run
+
+bindsym $mod+0 exec killall the_engine -USR1
+
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+
+for_window [class="Arandr"] floating enable
+
+bindsym $mod+semicolon  exec setxkbmap us
+bindsym $mod+z          exec setxkbmap -variant dvorak
+
+set $uhoh mpv $HOME/.config/i3/uhoh.wav
+bindsym $mod+F12        exec $uhoh
+bindsym $mod+Shift+Escape     exec systemctl suspend
+bindsym $mod+Escape     exec i3lock
+bindsym $mod+t          exec plover -s plover_send_command toggle
+bindsym $mod+p          exec maim -u ~/user-data/photo/screenshot/$(date +%s).png && $uhoh
+bindsym $mod+Shift+p    exec ~/.config/i3/maimselect.sh && $uhoh
+bindsym $mod+Return 	exec alacritty
+bindsym $mod+Shift+q 	kill
+# bindsym $mod+d 			exec --no-startup-id dmenu_run -fn "Roboto Mono 15" -l 10 -p "run"
+#bindsym $mod+d          exec --no-startup-id rofi -show drun
+bindsym $mod+d 			exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -l 30 -i -fn DINPro"
+bindsym $mod+b 			split h
+bindsym $mod+v 			split v
+bindsym $mod+f 			fullscreen toggle
+
+bindsym $mod+s 			layout stacking
+bindsym $mod+w 			layout tabbed
+bindsym $mod+e 			layout toggle split
+bindsym $mod+Shift+space 	floating toggle
+bindsym $mod+space 		focus mode_toggle
+bindsym $mod+a 			focus parent
+bindsym $mod+Shift+minus 	move scratchpad
+bindsym $mod+minus 		scratchpad show
+bindsym $mod+Shift+c 		reload
+bindsym $mod+Shift+r 		restart
+bindsym $mod+Tab workspace back_and_forth
+
+bindsym $mod+m exec i3-input -F 'mark %s' -l 1 -P 'Mark: '
+bindsym $mod+Shift+m unmark
+bindsym $mod+g exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Goto: '
+
+default_border pixel 1
+hide_edge_borders both
+# default_border normal 1
+title_align center
+
+# A more modern dmenu replacement is rofi:
+# There also is i3-dmenu-desktop which only displays applications shipping a
+# .desktop file. It is a wrapper around dmenu, so you need that installed.
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# change focus
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# move focused window
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+apostrophe workspace number $ws4
+bindsym $mod+comma workspace number $ws5
+bindsym $mod+period workspace number $ws6
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+apostrophe move container to workspace number $ws4
+bindsym $mod+Shift+comma move container to workspace number $ws5
+bindsym $mod+Shift+period move container to workspace number $ws6
+
+# reload the configuration file
+# exit i3 (logs you out of your X session)
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+mode "exit: [l]ogout, [r]eboot, [s]hutdown" {
+
+  bindsym l 		exec killall i3
+  bindsym r 		exec systemctl reboot
+  bindsym s 		exec systemctl shutdown
+  bindsym Escape 	mode "default"
+  bindsym Return 	mode "default"
+
+}
+bindsym $mod+Shift+e mode "exit: [l]ogout, [r]eboot, [s]hutdown"
+
+mode "resize" {
+set $rpx 100
+set $rpt 5
+        bindsym $left       resize shrink width $rpx px or $rpt ppt
+        bindsym $down       resize grow height $rpx px or $rpt ppt
+        bindsym $up         resize shrink height $rpx px or $rpt ppt
+        bindsym $right      resize grow width $rpx px or $rpt ppt
+
+        bindsym Return 	mode "default"
+        bindsym Escape 	mode "default"
+        bindsym $mod+r 	mode "default"
+}
+bindsym $mod+r mode "resize"
+
+set $cbg #262626
+set $org #ffaf00
+
+set $grn #afaf00
+set $wht #ffd7af
+set $red #d75f5f
+set $altorg #ff8700
+set $blu #87af87
+set $pink #d787af
+set $gry #8a8a8a
+
+# exec --no-startup-id polybar -r
+
+bar {
+    font $fnt
+    position top
+        status_command i3status -c ~/.config/i3status/i3status.conf
+        colors {
+            background $cbg
+            statusline $wht
+            separator $gry
+
+                            #  border  bg      text
+            focused_workspace  $org    $cbg     $wht
+            inactive_workspace $cbg    $cbg     $gry
+
+            active_workspace   #333333 #5f676a #ffffff
+            urgent_workspace   $red $red        $wht
+            binding_mode       #2f343a #900000 #ffffff
+        }
+}
+
+# class                 border  backgr. text    indicator child_border
+client.focused          $org    $cbg    $wht     $wht      $org
+client.unfocused        $gry    $cbg    $wht     $gry       $gry
+client.background       #ffffff
+
+client.focused_inactive $altorg $cbg    $wht    $altorg   $altorg
+client.urgent           $red    $cbg    $wht    $red      $red
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+

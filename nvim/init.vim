@@ -12,6 +12,12 @@ set title
 set ignorecase
 set smartcase 
 
+fun! Eng()
+    ia bn begin
+    ia govt government
+    ia wout without
+endfun
+
 fun! ZigFileFunc()
     ia COMPUN       @compileError("unsupported " ++ <++>)<++>
     ia FMT          pub fn format(value: @This(), comptime fmt: []const u8, options: std.fmt.FormatOptions, writer:anytype)!void{<++>}
@@ -64,7 +70,8 @@ fun! ZigFileFunc()
     map <leader>t :!zig test "%"<CR>
 
     " Set custom args with let zigargs = 'arg1 arg2'
-    map <leader>c :execute "!zig build run --" zigargs <CR> "
+    "map <leader>c :execute "!zig build run --" zigargs <CR> "
+    map <leader>c :execute "!zig build" zigargs <CR> "
 
     command! Source source ~/.config/nvim/init.vim
 
@@ -147,11 +154,11 @@ endif
 call plug#begin()
     Plug 'itchyny/lightline.vim' " the line at the bottom
     Plug 'tpope/vim-surround' "Change pairs like '' [] in one go
-    Plug 'raimondi/delimitmate' "Auto add  ' '
-    Plug 'justinmk/vim-sneak' " the s key like f and t
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'sainnhe/everforest'
+    Plug 'raimondi/delimitmate' "Auto add  ' '
+    Plug 'justinmk/vim-sneak' " the s key like f and t
     
     Plug 'ziglang/zig.vim'
     Plug 'nvim-lua/completion-nvim'
